@@ -1,11 +1,12 @@
+let firstOpenCard;
 /*
  * Create a list that holds all of your cards
  */
 class Card {
   constructor(icon) {
     this.icon = icon;
-    this.matched = false;
-    this.flipped = false;
+    // this.matched = false;
+    // this.flipped = false;
   }
 }
 
@@ -42,17 +43,58 @@ deal(deck);
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
 $('.card').click(function() {
-  $(this).attr("class", "card open show");
+
+  let card = $(this);
+
+  openCard(card);
+
+  if (!save(card)) {
+    if (match(card)) {
+      console.log("They match!");
+    } else {
+      console.log("NO match!");
+      setTimeout(function() {
+        closeCards(card);
+      }, 1500);
+    }
+  }
 });
 
-  /*
-   * Display the cards on the page
-   *   - shuffle the list of cards using the provided "shuffle" method below
-   *   - loop through each card and create its HTML
-   *   - add each card's HTML to the page
-   */
+function save(card) {
+  let saved = false;
 
-  // deal the cards
+  if (!firstOpenCard) {
+    firstOpenCard = card;
+    saved = true;
+  }
+
+  return saved;
+}
+
+function match(card) {
+  if (firstOpenCard.firstChild == card.firstChild) {
+    return true;
+  }
+}
+
+function openCard(card) {
+  card.attr("class", "card open show");
+}
+
+function closeCards(card) {
+  card.attr("class", "card");
+  firstOpenCard.attr("class", "card");
+  firstOpenCard = null;
+}
+
+/*
+ * Display the cards on the page
+ *   - shuffle the list of cards using the provided "shuffle" method below
+ *   - loop through each card and create its HTML
+ *   - add each card's HTML to the page
+ */
+
+// deal the cards
 function deal(deck) {
   for (let x = 0; x < deck.length; x++) {
     let newCard = "<i class='" + deck[x].icon + "'>";
