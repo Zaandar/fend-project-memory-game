@@ -107,3 +107,45 @@ h1 {
     float: right;
     cursor: pointer;
 }
+
+/*
+* Styles for the congratulations modal
+*/
+/* The Modal (background) */
+.modal-dialog {
+    color: #333;
+    display: block; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    /*overflow: auto;*/ /* Enable scroll if needed */
+    /*background-color: rgb(0,0,0); /* Fallback color */*/
+    /*background-color: rgba(0,0,0,0.4); /* Black w/ opacity */*/
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #aa7ecd;
+    margin: 25% auto;
+    padding: 15px;
+    border: 3px solid #000;
+    border-radius: 15px;
+    width: 40%;
+}
+
+/* The Close Button */
+.close {
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}

@@ -17,6 +17,7 @@
 
 // holds the first card selected for each attempt
 let firstOpenCard;
+let matchCount = 0;
 
 /*
  * Card class
@@ -53,12 +54,17 @@ function onEventClick(event) {
         // if a card has already been saved, see if they match
         if (match(card)) {
             // if they match, lock them open
+            matchCount++
             lockMatchedCards(card);
         } else {
             // if the cards don't match, wait a bit and then flip them closed
             setTimeout(function() {
                 closeCards(card);
             }, 750);
+        }
+
+        if (matchCount == 8) {
+            $('.modal-dialog').css('display', 'block');
         }
     }
 };
@@ -74,6 +80,13 @@ $('.restart').click(function() {
     shuffle(deck);
     deal(deck);
     $('.card').bind("click", onEventClick);
+});
+
+/*
+ * Close the congratulations dialog
+ */
+$('.close').click(function() {
+    $('.modal-dialog').css('display', 'none');
 });
 
 /*
