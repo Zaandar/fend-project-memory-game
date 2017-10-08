@@ -91,6 +91,16 @@ function onEventClickCard(event) {
 };
 
 /*
+ * 'R' shortcut for reset
+ */
+$(document).keydown(function(event) {
+
+    if ((event.which == 114) || (event.which == 82)) {
+        onEventRestart(event);
+    }
+});
+
+/*
  * Event handler for clicks on restart button
  */
 function onEventRestart(event) {
