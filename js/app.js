@@ -21,6 +21,7 @@ let matchCount = 0;
 let timerStart, timerStop = 0;
 let gameStarted = false;
 let moveCount = 0;
+let cardsOpen = false;
 
 /*
  * Card class
@@ -32,7 +33,6 @@ class Card {
 }
 
 // TODO, if you click twice on the same card, it shows up as a match
-// TODO, protect against clicking before the cards are turned back over
 
 let deck = createDeck();
 
@@ -42,7 +42,6 @@ deal(deck);
 
 // bind card clicks to handler
 $('.card').bind("click", onEventClickCard);
-
 
 /*
  * Event handler for clicks on cards
@@ -54,32 +53,37 @@ function onEventClickCard(event) {
         startTimer();
     }
 
-    // flip the card over
-    openCard(card);
+    if (!cardsOpen) {
+        // flip the card over
+        openCard(card);
 
-    // save the first card selected
-    if (!save(card)) {
-        // if a card has already been saved, see if they match
-        if (match(card)) {
-            // if they match, lock them open
-            matchCount++
-            lockMatchedCards(card);
-        } else {
-            // if the cards don't match, wait a bit and then flip them closed
-            setTimeout(function() {
-                closeCards(card);
-            }, 850);
-        }
+        // save the first card selected
+        if (!save(card)) {
+            // two cards are open
+            cardsOpen = true;
 
-        // all cards have been matched
-        if (matchCount == 8) {
-            // stop the game timer
-            let seconds = stopTimer();
+            // if a card has already been saved, see if they match
+            if (match(card)) {
+                // if they match, lock them open
+                matchCount++;
+                lockMatchedCards(card);
+            } else {
+                // if the cards don't match, wait a bit and then flip them closed
+                setTimeout(function() {
+                    closeCards(card);
+                }, 850);
+            }
 
-            $('.message').html("<p>Congratulations!!! Your time was " + seconds + " seconds." + "</p>");
+            // all cards have been matched
+            if (matchCount == 8) {
+                // stop the game timer
+                let seconds = stopTimer();
 
-            // display congrats modal
-            $('.modal-dialog').css('display', 'block');
+                $('.message').html("<p>Congratulations!!! Your time was " + seconds + " seconds." + "</p>");
+
+                // display congrats modal
+                $('.modal-dialog').css('display', 'block');
+            }
         }
     }
 };
@@ -225,7 +229,7 @@ function openCard(card) {
 function closeCards(card) {
     card.attr("class", "card");
     firstOpenCard.attr("class", "card");
-
+    cardsOpen = false;
     deselectCards();
 }
 
