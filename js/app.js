@@ -32,7 +32,6 @@ class Card {
     }
 }
 
-// TODO, if you click twice on the same card, it shows up as a match
 
 let deck = createDeck();
 
@@ -211,8 +210,11 @@ function match(card) {
         }
     }
 
-    if (card1[0].className === card2[0].className) {
-        return true;
+    if (!((card1.context.offsetLeft === card2.context.offsetLeft) &&
+            (card1.context.offsetTop === card2.context.offsetTop))) {
+        if (card1[0].className === card2[0].className) {
+            return true;
+        }
     }
 }
 
@@ -239,7 +241,7 @@ function closeCards(card) {
 function lockMatchedCards(card) {
     card.attr("class", "card match");
     firstOpenCard.attr("class", "card match");
-
+    cardsOpen = false;
     deselectCards();
 }
 
