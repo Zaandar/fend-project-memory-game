@@ -18,6 +18,9 @@
 // holds the first card selected for each attempt
 let firstOpenCard;
 let matchCount = 0;
+let timerStart, timerStop = 0;
+let gameStarted = false;
+let moveCount = 0;
 
 /*
  * Card class
@@ -29,6 +32,7 @@ class Card {
 }
 
 // TODO, if you click twice on the same card, it shows up as a match
+// TODO, protect against clicking before the cards are turned back over
 
 let deck = createDeck();
 
@@ -37,14 +41,18 @@ shuffle(deck);
 deal(deck);
 
 // bind card clicks to handler
-$('.card').bind("click", onEventClick);
+$('.card').bind("click", onEventClickCard);
 
 
 /*
  * Event handler for clicks on cards
  */
-function onEventClick(event) {
+function onEventClickCard(event) {
     let card = $(this);
+
+    if (!gameStarted) {
+        startTimer();
+    }
 
     // flip the card over
     openCard(card);
@@ -60,26 +68,59 @@ function onEventClick(event) {
             // if the cards don't match, wait a bit and then flip them closed
             setTimeout(function() {
                 closeCards(card);
-            }, 750);
+            }, 850);
         }
 
+        // all cards have been matched
         if (matchCount == 8) {
+            // stop the game timer
+            let seconds = stopTimer();
+
+            $('.message').html("<p>Congratulations!!! Your time was " + seconds + " seconds." + "</p>");
+
+            // display congrats modal
             $('.modal-dialog').css('display', 'block');
         }
     }
 };
 
 /*
- * Handle the reset button
+ * Event handler for clicks on restart button
  */
-$('.restart').click(function() {
-    $('.card').unbind("click", onEventClick);
+function onEventRestart(event) {
+    // if the congrats dialog is open, close it
+    $('.modal-dialog').css('display', 'none');
+    $('.card').unbind("click", onEventClickCard);
     $('.card').remove();
     deck = createDeck();
 
     shuffle(deck);
     deal(deck);
-    $('.card').bind("click", onEventClick);
+    $('.card').bind("click", onEventClickCard);
+
+    timerStart = 0;
+    timerStop = 0;
+    gameStarted = false;
+    moveCount = 0;
+    matchCount = 0;
+    starCount = 3;
+}
+
+/*
+ * Handle the reset button
+ */
+$('.restart').bind("click", onEventRestart);
+
+/*
+ * Handle the yes button
+ */
+$('.yes-option').bind("click", onEventRestart);
+
+/*
+ * Handle the no button
+ */
+$('.no-option').click(function() {
+    $('.modal-dialog').css('display', 'none');
 });
 
 /*
@@ -88,6 +129,24 @@ $('.restart').click(function() {
 $('.close').click(function() {
     $('.modal-dialog').css('display', 'none');
 });
+
+/*
+ * Start the game timer
+ */
+function startTimer() {
+    timerStop = 0;
+    timerStart = Date.now();
+    gameStarted = true;
+}
+
+/*
+ * Stop the game timer and return seconds elapsed
+ */
+function stopTimer() {
+    timerStop = Date.now();
+    gameStarted = false;
+    return (timerStop - timerStart) / 1000;
+}
 
 /*
  * Create a deck of cards, 2 of each
@@ -135,6 +194,18 @@ function save(card) {
 function match(card) {
     let card1 = firstOpenCard.find('i');
     let card2 = card.find('i');
+
+    moveCount++;
+    $('.moves').html(moveCount);
+
+    if (moveCount % 8 == 0) {
+        let starList = $('.stars').find('li');
+        let firstStar = starList.first();
+
+        if (starList.length > 0) {
+            firstStar.remove();
+        }
+    }
 
     if (card1[0].className === card2[0].className) {
         return true;
@@ -184,6 +255,12 @@ function deal(deck) {
         let newCard = "<i class='" + deck[x].icon + "'>";
         let dealtCard = $('<li class="card">' + newCard + '</i></li>');
         $('.deck').append(dealtCard);
+    }
+
+    $('.moves').html(moveCount);
+
+    for (let x = 0; x < 3; x++) {
+        $('.stars').append('<li><i class="fa fa-star"></i></li>');
     }
 }
 

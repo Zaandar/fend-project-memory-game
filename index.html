@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <link rel="stylesheet prefetch" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
-    <link rel="stylesheet prefetch" href="https://fonts.googleapis.com/css?family=Coda">
+    <link rel="stylesheet prefetch" href="https://fonts.googleapis.com/css?family=Nunito">
     <link rel="stylesheet" href="css/app.css">
 </head>
 
@@ -20,12 +20,15 @@
 
         <section class="score-panel">
             <ul class="stars">
+                <!-- number of stars added here dynamically -->
+                <!-- <li><i class="fa fa-star"></i></li>
                 <li><i class="fa fa-star"></i></li>
-                <li><i class="fa fa-star"></i></li>
-                <li><i class="fa fa-star"></i></li>
+                <li><i class="fa fa-star"></i></li> -->
             </ul>
 
-            <span class="moves">3</span> Moves
+            <span class="moves">
+                <!-- number of moves added here dynamically -->
+            </span> Moves
 
             <div class="restart">
                 <i class="fa fa-repeat"></i>
@@ -42,7 +45,12 @@
         <div class="modal-content">
             <!-- "x" for closing the dialog -->
             <span class="close">&times;</span>
-            <p>Congratulations!!!</p>
+            <div class="message">
+                <!-- congratulations message added here dynamically -->
+            </div>
+            <P>Would you like to play again?</p>
+            <button class="yes-option">Yes</button>
+            <button class="no-option">No</button>
         </div>
     </div>
 
