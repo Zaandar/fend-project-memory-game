@@ -228,7 +228,7 @@ function match(card) {
         let starList = $('.stars').find('li');
         let firstStar = starList.first();
 
-        if (starList.length > 0) {
+        if (starList.length > 1) {
             firstStar.remove();
         }
 
