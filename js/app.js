@@ -18,11 +18,16 @@
 // holds the first card selected for each attempt
 let firstOpenCard;
 let matchCount = 0;
-let timerStart, timerStop = 0;
 let gameStarted = false;
 let moveCount = 0;
 let twoCardsOpen = false;
 let starCount = 3;
+let timeKeeper;
+const millis = 1000;
+const millisInASecond = 1000 * 60;
+const millisInAMinute = 1000 * 60 * 60;
+const millisInAnHour = 1000 * 60 * 60 * 24;
+let playersTime = "00:00:00"
 
 /*
  * Card class
@@ -34,6 +39,7 @@ class Card {
 }
 
 // initialize game
+$('.game-timer').html("Time Elapsed: 0:0:0");
 let deck = createDeck();
 shuffle(deck);
 deal(deck);
@@ -81,7 +87,7 @@ function onEventClickCard(event) {
                 let seconds = stopTimer();
 
                 // message when all matched
-                $('.message').html("<p>Congratulations!!! You earned " + starCount + " star(s). Your time was " + seconds + " seconds." + "</p>");
+                $('.message').html("<p>Congratulations!!! You earned " + starCount + " star(s). Your time was " + playersTime + ".</p>");
 
                 // display congrats modal
                 $('.modal-dialog').css('display', 'block');
@@ -108,10 +114,10 @@ function onEventRestart(event) {
     let starList = $('.stars').find('li');
     starList.remove();
 
+    $('.game-timer').html("Time Elapsed: 0:0:0");
+
     // reset everything
-    timerStart = 0;
-    timerStop = 0;
-    gameStarted = false;
+    stopTimer();
     moveCount = 0;
     matchCount = 0;
     starCount = 3;
@@ -158,18 +164,33 @@ $('.close').click(function() {
  * Start the game timer
  */
 function startTimer() {
-    timerStop = 0;
-    timerStart = Date.now();
+    let timerStart = Date.now();
     gameStarted = true;
+    timeKeeper = setInterval(function() {
+        timer(timerStart)
+    }, 1000);
 }
 
 /*
  * Stop the game timer and return seconds elapsed
  */
 function stopTimer() {
-    timerStop = Date.now();
     gameStarted = false;
-    return (timerStop - timerStart) / 1000;
+    clearInterval(timeKeeper);
+}
+
+function timer(timerStart) {
+    let timeNow = Date.now(); // milliseconds
+    let timeElapsedMillis = timeNow - timerStart;
+
+    // mod so that we get no more than 59 secs, 59 min, 24 hr
+    let seconds = Math.floor((timeElapsedMillis % millisInASecond) / millis);
+    let minutes = Math.floor((timeElapsedMillis % millisInAMinute) / millisInASecond);
+    let hours = Math.floor((timeElapsedMillis % millisInAnHour) / millisInAMinute);
+
+    playersTime = hours + ":" + minutes + ":" + seconds;
+
+    $('.game-timer').html("Time Elapsed: " + playersTime);
 }
 
 /*
